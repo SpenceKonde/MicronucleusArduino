@@ -1,5 +1,25 @@
 #! /bin/bash
 
+# MicroNucleus launcher by Steve Sanbeg
+
+# This is intended as a drop-in replacement for the Digispark program
+# of the same name.  Its role is to translate the avrdude syntax used
+# by Arduino IDE into the equivalent micronucleus call, as well as to
+# print some clearer messages to the terminal window.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 bin=$(dirname "$0")
 options=$(getopt -n "$0" -o nc:U: --long timeout: -- "$@")
 if [ $? -ne 0 ]
