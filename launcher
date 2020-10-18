@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# MicroNucleus launcher by Steve Sanbeg
+# Micronucleus launcher by Steve Sanbeg
 
 # This is intended as a drop-in replacement for the Digispark program
 # of the same name.  Its role is to translate the avrdude syntax used
