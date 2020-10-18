@@ -1,0 +1,60 @@
+#! /bin/bash
+
+bin=$(dirname "$0")
+options=$(getopt -n "$0" -o nc:U: --long timeout: -- "$@")
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
+
+die() {
+    echo "$0: $1" >&2;
+    exit 1;
+}
+
+timeout=60
+type='intel-hex'
+file=''
+exec=exec
+
+eval set -- "$options"
+while true; do
+    case "$1" in
+    -c)
+        programmer="$2"
+	shift
+        ;;
+    -n)
+	exec=echo;;
+    -U)
+	str="$2"
+	mem_op=$(echo "$str" | cut -d: -f1,2)
+	[ "$mem_op" = "flash:w" ] || die "Only writing to flash is supported."
+	
+	file=$(echo "$str" | cut -d: -f3) # the file to write
+
+	format=$(echo "$str" | cut -d: -f4) # option, should be i, but r may be supported.
+	case $format in
+	    i|'') type='intel-hex';;
+	    r) type='raw';;
+	    *) die "Unsupported file type: $format";;
+	esac
+	;;
+    --timeout)
+	timeout="$2"
+	shift;;
+    --)
+	shift
+	break;;
+    esac
+    shift
+done
+
+# check that -U was specified, and we got something that could be a file
+[ -n "$file" ] || die "No file specified!"
+
+# fail fast, sanity check file before we plug in & connect; should never happen from Adruino IDE
+:< "$file" || exit 1
+
+echo "Plug in or reset device now (will timeout in $timeout seconds)..."
+$exec "$bin/micronucleus" --type "$type" --timeout $timeout --run --no-ansi "$file"
